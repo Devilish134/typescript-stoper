@@ -33,7 +33,12 @@ abstract class Stopwatch {
   }
 
   private initActions(): void {
-    this.dom.startBtn.addEventListener("click", () => this.start());
+    this.dom.startBtn.addEventListener("click", () => {
+      if (this.timer !== null) {
+        clearInterval(this.timer);
+      }
+      this.start();
+    });
     this.dom.stopBtn.addEventListener("click", () => this.stop());
     this.dom.resetBtn.addEventListener("click", () => this.reset());
   }
@@ -52,32 +57,26 @@ abstract class Stopwatch {
     this.dom.currentTime.innerHTML = this.formatTime(this.currentTime);
   }
 
-  protected start(time: number): void {}
-
-  /*
-    Funkcja ta powinna wystartować interwał, który będzie wykonywał się co milisekundę.
-    Powinien on każdorazowo włączać funkcję this.step
-
-    Dla wygody przypisz ten interwał do this.timer  */
-
-  step() {
-    /*
-    Funkcja ta powinna zwiększać liczbę sekund w this.currentTime o jeden, a następnie uruchamiać metodę
-    renderującą aktualny czas w HTML-u (this.renderTime).
-    */
+  protected start(): void {
+    this.timer = setInterval(() => {
+      this.step(), 1;
+    }) as any;
   }
 
-  stop() {
-    /* 
-    Funkcja ta powinna zatrzymywać interval przypisany do this.timer.
-    */
+  protected step(): void {
+    this.currentTime = this.currentTime + 1;
+
+    this.renderTime();
+  }
+
+  protected stop(): void {
+    clearInterval(this.timer as number);
   }
 
   reset() {
-    /*
-    Ta funkcja powinna resetować czas zapisany w this.currentTime, a więć zmieniać jego wartość na zero.
-    Naturalnie powinno to wiązać się również z przerenderowaniem HTML-a (this.renderTime).
-    */
+    this.currentTime = 0;
+
+    this.dom.currentTime.innerHTML = this.formatTime(this.currentTime);
   }
 }
 
