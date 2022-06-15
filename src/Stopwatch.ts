@@ -43,7 +43,7 @@ abstract class Stopwatch {
     this.dom.resetBtn.addEventListener("click", () => this.reset());
   }
 
-  protected formatTime(time: number): string {
+  public formatTime(time: number): string {
     const pad0 = (num: number): string =>
       num < 10 ? `0${num}` : num.toString();
 
@@ -66,8 +66,8 @@ abstract class Stopwatch {
 
   protected start(): void {
     this.timer = setInterval(() => {
-      this.step(), 1;
-    }) as any;
+      this.step();
+    }, 1) as any;
   }
 
   protected step(): void {
